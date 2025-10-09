@@ -1,6 +1,5 @@
 import { baseURL } from "@/baseUrl";
 import { createMcpHandler } from "mcp-handler";
-import { z } from "zod";
 
 const getAppsSdkCompatibleHtml = async (baseUrl: string, path: string) => {
   const result = await fetch(`${baseUrl}${path}`);
@@ -22,8 +21,6 @@ const getContentToShow = async () => {
 };
 
 function widgetMeta(widget: ContentWidget) {
-  // Documentation for all of these configuration options can be found here:
-  // https://developers.openai.com/apps-sdk/build/mcp-server
   return {
     "openai/outputTemplate": widget.templateUri,
     "openai/toolInvocation/invoking": widget.invoking,
@@ -39,14 +36,12 @@ const handler = createMcpHandler(async (server) => {
   const contentWidget: ContentWidget = {
     id: "show_content",
     title: "Show Content",
-    templateUri: "ui://widget/content-template-17.html",
+    templateUri: "ui://widget/content-template.html",
     invoking: "Loading content...",
     invoked: "Content loaded",
     html: html,
     description: "Displays the homepage content",
   };
-
-  // Register the content widget resource
   server.registerResource(
     "content-widget",
     contentWidget.templateUri,

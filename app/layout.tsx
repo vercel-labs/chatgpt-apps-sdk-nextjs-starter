@@ -3,16 +3,14 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { baseURL } from "@/baseUrl";
 
-console.log("baseURL in layout", baseURL);
 declare global {
   interface Window {
-    openai: API;
+    openai?: {
+      openExternal: (options: { href: string }) => void;
+    };
+    innerBaseUrl?: string;
   }
 }
-
-type API = {
-  openExternal: (options: { href: string }) => void;
-};
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -55,8 +53,6 @@ function NextChatSDKBootstrap({ baseUrl }: { baseUrl: string }) {
       <script>
         {"(" +
           (() => {
-            console.log("initting 16");
-            // @ts-ignore
             const baseUrl = window.innerBaseUrl;
             const htmlElement = document.documentElement;
             const observer = new MutationObserver((mutations) => {
@@ -81,33 +77,20 @@ function NextChatSDKBootstrap({ baseUrl }: { baseUrl: string }) {
             history.replaceState = (s, unused, url) => {
               const u = new URL(url ?? "", window.location.href);
               const href = u.pathname + u.search + u.hash;
-
               originalReplaceState.call(history, unused, href);
             };
+
             const originalPushState = history.pushState;
             history.pushState = (s, unused, url) => {
               const u = new URL(url ?? "", window.location.href);
               const href = u.pathname + u.search + u.hash;
-
               originalPushState.call(history, unused, href);
             };
 
-            console.log("[NextChatSDK] Base URL:", baseUrl);
-            // Only patch fetch if we're in an iframe (OpenAI environment)
             const appOrigin = new URL(baseUrl).origin;
             const isInIframe = window.self !== window.top;
 
-            console.log("[NextChatSDK] Init check:", {
-              isInIframe,
-              windowOrigin: window.location.origin,
-              appOrigin,
-              shouldPatch: isInIframe && window.location.origin !== appOrigin,
-            });
-
             if (isInIframe && window.location.origin !== appOrigin) {
-              console.log(
-                "[NextChatSDK] Patching fetch for iframe environment"
-              );
               const originalFetch = window.fetch;
 
               window.fetch = (input: URL | RequestInfo, init?: RequestInit) => {
@@ -118,19 +101,7 @@ function NextChatSDKBootstrap({ baseUrl }: { baseUrl: string }) {
                   url = new URL(input.url, window.location.href);
                 }
 
-                console.log("[NextChatSDK] Fetch intercepted:", {
-                  originalInput: input,
-                  parsedUrl: url.href,
-                  urlOrigin: url.origin,
-                  appOrigin,
-                  windowOrigin: window.location.origin,
-                });
-
-                // If this is a request to our app's origin, ensure CORS mode
                 if (url.origin === appOrigin) {
-                  console.log(
-                    "[NextChatSDK] Request to app origin - adding CORS mode"
-                  );
                   if (typeof input === "string" || input instanceof URL) {
                     input = url.toString();
                   } else {
@@ -143,7 +114,6 @@ function NextChatSDKBootstrap({ baseUrl }: { baseUrl: string }) {
                   });
                 }
 
-                // If this is a same-origin request (to the sandbox), rewrite to app origin
                 if (url.origin === window.location.origin) {
                   const newUrl = new URL(baseUrl);
                   newUrl.pathname = url.pathname;
@@ -151,11 +121,6 @@ function NextChatSDKBootstrap({ baseUrl }: { baseUrl: string }) {
                   newUrl.hash = url.hash;
                   url = newUrl;
 
-                  console.log(
-                    "[NextChatSDK] Rewriting sandbox URL to app URL:",
-                    url.href
-                  );
-
                   if (typeof input === "string" || input instanceof URL) {
                     input = url.toString();
                   } else {
@@ -168,14 +133,8 @@ function NextChatSDKBootstrap({ baseUrl }: { baseUrl: string }) {
                   });
                 }
 
-                // Other requests pass through
-                console.log("[NextChatSDK] Passing through external request");
                 return originalFetch.call(window, input, init);
               };
-            } else {
-              console.log(
-                "[NextChatSDK] Not in iframe environment - skipping fetch patch"
-              );
             }
           }).toString() +
           ")()"}
