@@ -133,12 +133,19 @@ next.config.ts            # Asset prefix configuration
 
 ## Deployment
 
-### Vercel
+This project is designed to work seamlessly with [Vercel](https://vercel.com) deployment. The `baseUrl.ts` configuration automatically detects Vercel environment variables and sets the correct asset URLs.
 
-The easiest way to deploy is using [Vercel](https://vercel.com):
+### Deploy to Vercel
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/vercel-labs/openai-apps-sdk-nextjs-starter)
+
+Or deploy manually:
 
 ```bash
 vercel deploy
 ```
 
-Make sure to set the correct environment variables for production URLs in `next.config.ts`.
+The configuration automatically handles:
+- Production URLs via `VERCEL_PROJECT_PRODUCTION_URL`
+- Preview/branch URLs via `VERCEL_BRANCH_URL`
+- Asset prefixing for correct resource loading in iframes

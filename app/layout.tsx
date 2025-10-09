@@ -8,7 +8,7 @@ declare global {
     openai?: {
       openExternal: (options: { href: string }) => void;
     };
-    innerBaseUrl?: string;
+    innerBaseUrl: string;
   }
 }
 const geistSans = Geist({
