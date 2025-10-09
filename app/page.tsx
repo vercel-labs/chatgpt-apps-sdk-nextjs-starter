@@ -22,7 +22,6 @@ export default function Home() {
       },
       set(newValue: any) {
         currentValue = newValue;
-        console.log("Tool output updated:", newValue);
         if (newValue?.name) {
           setName(newValue.name);
         }
@@ -43,7 +42,7 @@ export default function Home() {
           <h1 className="text-2xl font-bold">Welcome, {name ?? "..."}</h1>
           <Link prefetch={false} href="/client-page">
               Go to Client Page
-            </Link>
+          </Link>
         </div>
         <Image
           className="dark:invert"
