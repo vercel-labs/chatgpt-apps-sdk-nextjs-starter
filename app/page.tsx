@@ -1,9 +1,49 @@
+"use client";
+
 import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [name, setName] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    if (!window.openai) {
+      (window as any).openai = {};
+    }
+
+    let currentValue = (window as any).openai.toolOutput;
+
+    Object.defineProperty((window as any).openai, "toolOutput", {
+      get() {
+        return currentValue;
+      },
+      set(newValue: any) {
+        currentValue = newValue;
+        if (newValue?.name) {
+          setName(newValue.name);
+        }
+      },
+      configurable: true,
+      enumerable: true,
+    });
+
+    if (currentValue?.name) {
+      setName(currentValue.name);
+    }
+  }, []);
+
   return (
     <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
+        <div className="flex flex-col gap-4">
+          <h1 className="text-2xl font-bold">Welcome, {name ?? "..."}</h1>
+          <Link prefetch={false} href="/client-page">
+              Go to Client Page
+          </Link>
+        </div>
         <Image
           className="dark:invert"
           src="/next.svg"
