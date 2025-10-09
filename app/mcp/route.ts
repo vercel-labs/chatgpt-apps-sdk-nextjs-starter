@@ -39,7 +39,7 @@ const handler = createMcpHandler(async (server) => {
   const contentWidget: ContentWidget = {
     id: "show_content",
     title: "Show Content",
-    templateUri: "ui://widget/content-template-9.html",
+    templateUri: "ui://widget/content-template-17.html",
     invoking: "Loading content...",
     invoked: "Content loaded",
     html: html,

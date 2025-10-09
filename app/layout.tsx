@@ -3,6 +3,16 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { baseURL } from "@/baseUrl";
 
+console.log("baseURL in layout", baseURL);
+declare global {
+  interface Window {
+    openai: API;
+  }
+}
+
+type API = {
+  openExternal: (options: { href: string }) => void;
+};
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -41,10 +51,13 @@ function NextChatSDKBootstrap({ baseUrl }: { baseUrl: string }) {
   return (
     <>
       <base href={baseUrl}></base>
-      <script>{`const baseUrl = ${JSON.stringify(baseUrl)}`}</script>
+      <script>{`window.innerBaseUrl = ${JSON.stringify(baseUrl)}`}</script>
       <script>
         {"(" +
           (() => {
+            console.log("initting 16");
+            // @ts-ignore
+            const baseUrl = window.innerBaseUrl;
             const htmlElement = document.documentElement;
             const observer = new MutationObserver((mutations) => {
               mutations.forEach((mutation) => {
@@ -78,34 +91,92 @@ function NextChatSDKBootstrap({ baseUrl }: { baseUrl: string }) {
 
               originalPushState.call(history, unused, href);
             };
-            const originalFetch = window.fetch;
 
-            window.fetch = (input: URL | RequestInfo, init?: RequestInit) => {
-              let url: URL;
-              if (typeof input === "string" || input instanceof URL) {
-                url = new URL(input, window.location.href);
-              } else {
-                url = new URL(input.url, window.location.href);
-              }
+            console.log("[NextChatSDK] Base URL:", baseUrl);
+            // Only patch fetch if we're in an iframe (OpenAI environment)
+            const appOrigin = new URL(baseUrl).origin;
+            const isInIframe = window.self !== window.top;
 
-              if (url.origin === window.location.origin) {
-                const newUrl = new URL(baseUrl);
-                newUrl.pathname = url.pathname;
-                newUrl.search = url.search;
-                newUrl.hash = url.hash;
-                url = newUrl;
-              }
-              if (typeof input === "string" || input instanceof URL) {
-                input = url.toString();
-              } else {
-                input = new Request(url.toString(), input);
-              }
+            console.log("[NextChatSDK] Init check:", {
+              isInIframe,
+              windowOrigin: window.location.origin,
+              appOrigin,
+              shouldPatch: isInIframe && window.location.origin !== appOrigin,
+            });
 
-              return originalFetch.call(window, input, {
-                ...init,
-                mode: "cors",
-              });
-            };
+            if (isInIframe && window.location.origin !== appOrigin) {
+              console.log(
+                "[NextChatSDK] Patching fetch for iframe environment"
+              );
+              const originalFetch = window.fetch;
+
+              window.fetch = (input: URL | RequestInfo, init?: RequestInit) => {
+                let url: URL;
+                if (typeof input === "string" || input instanceof URL) {
+                  url = new URL(input, window.location.href);
+                } else {
+                  url = new URL(input.url, window.location.href);
+                }
+
+                console.log("[NextChatSDK] Fetch intercepted:", {
+                  originalInput: input,
+                  parsedUrl: url.href,
+                  urlOrigin: url.origin,
+                  appOrigin,
+                  windowOrigin: window.location.origin,
+                });
+
+                // If this is a request to our app's origin, ensure CORS mode
+                if (url.origin === appOrigin) {
+                  console.log(
+                    "[NextChatSDK] Request to app origin - adding CORS mode"
+                  );
+                  if (typeof input === "string" || input instanceof URL) {
+                    input = url.toString();
+                  } else {
+                    input = new Request(url.toString(), input);
+                  }
+
+                  return originalFetch.call(window, input, {
+                    ...init,
+                    mode: "cors",
+                  });
+                }
+
+                // If this is a same-origin request (to the sandbox), rewrite to app origin
+                if (url.origin === window.location.origin) {
+                  const newUrl = new URL(baseUrl);
+                  newUrl.pathname = url.pathname;
+                  newUrl.search = url.search;
+                  newUrl.hash = url.hash;
+                  url = newUrl;
+
+                  console.log(
+                    "[NextChatSDK] Rewriting sandbox URL to app URL:",
+                    url.href
+                  );
+
+                  if (typeof input === "string" || input instanceof URL) {
+                    input = url.toString();
+                  } else {
+                    input = new Request(url.toString(), input);
+                  }
+
+                  return originalFetch.call(window, input, {
+                    ...init,
+                    mode: "cors",
+                  });
+                }
+
+                // Other requests pass through
+                console.log("[NextChatSDK] Passing through external request");
+                return originalFetch.call(window, input, init);
+              };
+            } else {
+              console.log(
+                "[NextChatSDK] Not in iframe environment - skipping fetch patch"
+              );
+            }
           }).toString() +
           ")()"}
       </script>
