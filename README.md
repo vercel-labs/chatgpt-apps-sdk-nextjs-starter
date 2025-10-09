@@ -4,7 +4,7 @@ A minimal Next.js application demonstrating how to build an [OpenAI Apps SDK](ht
 
 ## Overview
 
-This project shows how to integrate a Next.js application with the ChatGPT Apps SDK using the Model Context Protocol (MCP). It includes a working MCP server that exposes tools and resources that can be called from ChatGPT, with responses rendered as interactive widgets in an iframe.
+This project shows how to integrate a Next.js application with the ChatGPT Apps SDK using the Model Context Protocol (MCP). It includes a working MCP server that exposes tools and resources that can be called from ChatGPT, with responses rendered natively in ChatGPT.
 
 ## Key Components
 
