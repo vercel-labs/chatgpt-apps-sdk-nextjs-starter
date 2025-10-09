@@ -145,7 +145,7 @@ This project is designed to work seamlessly with [Vercel](https://vercel.com) de
 
 ### Deploy to Vercel
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/vercel-labs/openai-apps-sdk-nextjs-starter)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/vercel-labs/chatgpt-apps-sdk-nextjs-starter)
 
 The configuration automatically handles:
 - Production URLs via `VERCEL_PROJECT_PRODUCTION_URL`
