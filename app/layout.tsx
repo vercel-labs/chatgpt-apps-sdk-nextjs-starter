@@ -91,6 +91,43 @@ function NextChatSDKBootstrap({ baseUrl }: { baseUrl: string }) {
             const appOrigin = new URL(baseUrl).origin;
             const isInIframe = window.self !== window.top;
 
+            window.addEventListener(
+              "click",
+              (e) => {
+                const a = (e?.target as HTMLElement)?.closest("a");
+                if (!a || !a.href) return;
+                const url = new URL(a.href, window.location.href);
+                if (
+                  url.origin !== window.location.origin &&
+                  url.origin != appOrigin
+                ) {
+                  try {
+                    if (window.openai) {
+                      window.openai?.openExternal({ href: a.href });
+                      e.preventDefault();
+                    }
+                  } catch {
+                    try {
+                      // @ts-ignore
+                      if (window.oai) {
+                        // @ts-ignore
+                        window.oai.openExternal({ href: a.href });
+                        e.preventDefault();
+                      }
+                    } catch {
+                      console.warn(
+                        "oai.openExternal failed, likely not in OpenAI client"
+                      );
+                    }
+                    console.warn(
+                      "openExternal failed, likely not in OpenAI client"
+                    );
+                  }
+                }
+              },
+              true
+            );
+
             if (isInIframe && window.location.origin !== appOrigin) {
               const originalFetch = window.fetch;
 

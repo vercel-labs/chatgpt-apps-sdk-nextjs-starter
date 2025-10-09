@@ -71,14 +71,14 @@ const handler = createMcpHandler(async (server) => {
     contentWidget.id,
     {
       title: contentWidget.title,
-      description: "Fetch and display the homepage content with the name of the user",
+      description:
+        "Fetch and display the homepage content with the name of the user",
       inputSchema: {
         name: z.string(),
       },
       _meta: widgetMeta(contentWidget),
     },
     async ({ name }) => {
-
       return {
         content: [
           {

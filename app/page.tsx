@@ -41,7 +41,7 @@ export default function Home() {
         <div className="flex flex-col gap-4">
           <h1 className="text-2xl font-bold">Welcome, {name ?? "..."}</h1>
           <Link prefetch={false} href="/client-page">
-              Go to Client Page
+            Go to Client Page
           </Link>
         </div>
         <Image
