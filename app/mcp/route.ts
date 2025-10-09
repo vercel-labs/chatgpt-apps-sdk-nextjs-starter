@@ -17,10 +17,6 @@ type ContentWidget = {
   description: string;
 };
 
-const getContentToShow = async () => {
-  return "Some content from an API";
-};
-
 function widgetMeta(widget: ContentWidget) {
   // Documentation for all of these configuration options can be found here:
   // https://developers.openai.com/apps-sdk/build/mcp-server
@@ -75,25 +71,28 @@ const handler = createMcpHandler(async (server) => {
   );
 
   // Register the show_content tool
+  // @ts-ignore
   server.registerTool(
     contentWidget.id,
     {
       title: contentWidget.title,
       description: "Fetch and display the homepage content",
-      inputSchema: {},
+      inputSchema: {
+        name: z.string(),
+      },
       _meta: widgetMeta(contentWidget),
     },
-    async () => {
-      const contentToShow = await getContentToShow();
+    async ({ name }) => {
 
       return {
         content: [
           {
             type: "text",
-            text: contentToShow,
+            text: name,
           },
         ],
         structuredContent: {
+          name: name,
           timestamp: new Date().toISOString(),
         },
         _meta: widgetMeta(contentWidget),

@@ -1,7 +1,61 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect } from "react";
+
+declare global {
+  interface Window {
+    openai?: {
+      toolOutput?: any;
+    };
+  }
+}
+
+function handleToolOutputUpdate(data: any) {
+  const toolNameElement = document.getElementById("tool-name");
+  if (toolNameElement && data?.name) {
+    toolNameElement.textContent = data.name;
+  }
+}
+
+function setupToolOutputListener() {
+  if (typeof window === "undefined") return;
+
+  if (!window.openai) {
+    (window as any).openai = {};
+  }
+
+  let currentValue = (window as any).openai.toolOutput;
+
+  Object.defineProperty((window as any).openai, "toolOutput", {
+    get() {
+      return currentValue;
+    },
+    set(newValue: any) {
+      currentValue = newValue;
+      console.log("Tool output updated:", newValue);
+      handleToolOutputUpdate(newValue);
+    },
+    configurable: true,
+    enumerable: true,
+  });
+
+  if (currentValue) {
+    handleToolOutputUpdate(currentValue);
+  } else {
+    handleToolOutputUpdate(null);
+  }
+}
 
 export default function Home() {
+
+  const name = "Anonymous";
+
+  useEffect(() => {
+    setupToolOutputListener();
+  }, []);
+
   return (
     <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
@@ -52,6 +106,15 @@ export default function Home() {
           </a>
         </div>
       </main>
+      
+      <div id="tool-info" style={{ marginTop: "20px", padding: "10px", background: "#f0f0f0", borderRadius: "8px", maxWidth: "600px" }}>
+        <div style={{ fontSize: "12px", color: "#666" }}>Tool Name:</div>
+        <div id="tool-name" style={{ fontSize: "16px", fontWeight: "bold", color: "#333" }}>
+          Waiting for tool call...
+        </div>
+      </div>
+
+      <h1>Welcome, {name}</h1>
       <a href="/client-page">Go to Client Page</a>
       <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
         <a
