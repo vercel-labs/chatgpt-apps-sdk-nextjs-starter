@@ -8,7 +8,7 @@ export default function HomePage() {
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
         <h1 className="text-4xl font-black tracking-tight">Welcome</h1>
         <p className="font-mono text-sm/6 text-center sm:text-left tracking-[-.01em] max-w-xl">
-          This is a client-side rendered page demonstrating navigation in your ChatGPT Apps SDK Next.js app.
+          This is a client-side rendered page demonstrating navigation in your ChatGPT app.
         </p>
         <Link 
           href="/"
