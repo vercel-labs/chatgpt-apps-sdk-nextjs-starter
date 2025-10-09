@@ -7,6 +7,7 @@ declare global {
   interface Window {
     openai?: {
       openExternal: (options: { href: string }) => void;
+      toolOutput?: any;
     };
     innerBaseUrl: string;
   }
