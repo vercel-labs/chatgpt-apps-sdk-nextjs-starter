@@ -1,3 +1,4 @@
+import { baseURL } from "@/baseUrl";
 import { createMcpHandler } from "mcp-handler";
 import { z } from "zod";
 
@@ -33,15 +34,12 @@ function widgetMeta(widget: ContentWidget) {
 }
 
 const handler = createMcpHandler(async (server) => {
-  const html = await getAppsSdkCompatibleHtml(
-    process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
-    "/"
-  );
+  const html = await getAppsSdkCompatibleHtml(baseURL, "/");
 
   const contentWidget: ContentWidget = {
     id: "show_content",
     title: "Show Content",
-    templateUri: "ui://widget/content-template-5.html",
+    templateUri: "ui://widget/content-template-9.html",
     invoking: "Loading content...",
     invoked: "Content loaded",
     html: html,

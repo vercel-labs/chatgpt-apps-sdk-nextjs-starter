@@ -52,7 +52,7 @@ export default function Home() {
           </a>
         </div>
       </main>
-      <Link href="/client-page">Go to Client Page</Link>
+      <a href="/client-page">Go to Client Page</a>
       <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
         <a
           className="flex items-center gap-2 hover:underline hover:underline-offset-4"
