@@ -66,7 +66,6 @@ const handler = createMcpHandler(async (server) => {
     })
   );
 
-  // Register the show_content tool
   // @ts-ignore
   server.registerTool(
     contentWidget.id,
