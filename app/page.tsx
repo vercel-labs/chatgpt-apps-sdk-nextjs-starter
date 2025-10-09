@@ -54,7 +54,7 @@ export default function Home() {
             Name returned from tool call: {name ?? "..."}
           </li>
           <li className="mb-2 tracking-[-.01em]">
-            Protocol is mounted at '/mcp'.
+            MCP server path: <Link href="/mcp" className="underline">/mcp</Link>
           </li>
         </ol>
 
