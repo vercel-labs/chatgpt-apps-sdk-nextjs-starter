@@ -1,17 +1,8 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
-
-declare global {
-  interface Window {
-    openai?: {
-      toolOutput?: any;
-    };
-  }
-}
-
-
 
 export default function Home() {
   const [name, setName] = useState<string | null>(null);
@@ -50,7 +41,9 @@ export default function Home() {
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
         <div className="flex flex-col gap-4">
           <h1 className="text-2xl font-bold">Welcome, {name ?? "..."}</h1>
-          <a href="/client-page">Go to Client Page</a>
+          <Link prefetch={false} href="/client-page">
+              Go to Client Page
+            </Link>
         </div>
         <Image
           className="dark:invert"
@@ -99,7 +92,6 @@ export default function Home() {
           </a>
         </div>
       </main>
-
       <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
         <a
           className="flex items-center gap-2 hover:underline hover:underline-offset-4"

@@ -3,6 +3,14 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { baseURL } from "@/baseUrl";
 
+declare global {
+  interface Window {
+    openai?: {
+      openExternal: (options: { href: string }) => void;
+    };
+    innerBaseUrl: string;
+  }
+}
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -41,10 +49,11 @@ function NextChatSDKBootstrap({ baseUrl }: { baseUrl: string }) {
   return (
     <>
       <base href={baseUrl}></base>
-      <script>{`const baseUrl = ${JSON.stringify(baseUrl)}`}</script>
+      <script>{`window.innerBaseUrl = ${JSON.stringify(baseUrl)}`}</script>
       <script>
         {"(" +
           (() => {
+            const baseUrl = window.innerBaseUrl;
             const htmlElement = document.documentElement;
             const observer = new MutationObserver((mutations) => {
               mutations.forEach((mutation) => {
@@ -68,44 +77,65 @@ function NextChatSDKBootstrap({ baseUrl }: { baseUrl: string }) {
             history.replaceState = (s, unused, url) => {
               const u = new URL(url ?? "", window.location.href);
               const href = u.pathname + u.search + u.hash;
-
               originalReplaceState.call(history, unused, href);
             };
+
             const originalPushState = history.pushState;
             history.pushState = (s, unused, url) => {
               const u = new URL(url ?? "", window.location.href);
               const href = u.pathname + u.search + u.hash;
-
               originalPushState.call(history, unused, href);
             };
-            const originalFetch = window.fetch;
 
-            window.fetch = (input: URL | RequestInfo, init?: RequestInit) => {
-              let url: URL;
-              if (typeof input === "string" || input instanceof URL) {
-                url = new URL(input, window.location.href);
-              } else {
-                url = new URL(input.url, window.location.href);
-              }
+            const appOrigin = new URL(baseUrl).origin;
+            const isInIframe = window.self !== window.top;
 
-              if (url.origin === window.location.origin) {
-                const newUrl = new URL(baseUrl);
-                newUrl.pathname = url.pathname;
-                newUrl.search = url.search;
-                newUrl.hash = url.hash;
-                url = newUrl;
-              }
-              if (typeof input === "string" || input instanceof URL) {
-                input = url.toString();
-              } else {
-                input = new Request(url.toString(), input);
-              }
+            if (isInIframe && window.location.origin !== appOrigin) {
+              const originalFetch = window.fetch;
 
-              return originalFetch.call(window, input, {
-                ...init,
-                mode: "cors",
-              });
-            };
+              window.fetch = (input: URL | RequestInfo, init?: RequestInit) => {
+                let url: URL;
+                if (typeof input === "string" || input instanceof URL) {
+                  url = new URL(input, window.location.href);
+                } else {
+                  url = new URL(input.url, window.location.href);
+                }
+
+                if (url.origin === appOrigin) {
+                  if (typeof input === "string" || input instanceof URL) {
+                    input = url.toString();
+                  } else {
+                    input = new Request(url.toString(), input);
+                  }
+
+                  return originalFetch.call(window, input, {
+                    ...init,
+                    mode: "cors",
+                  });
+                }
+
+                if (url.origin === window.location.origin) {
+                  const newUrl = new URL(baseUrl);
+                  newUrl.pathname = url.pathname;
+                  newUrl.search = url.search;
+                  newUrl.hash = url.hash;
+                  url = newUrl;
+
+                  if (typeof input === "string" || input instanceof URL) {
+                    input = url.toString();
+                  } else {
+                    input = new Request(url.toString(), input);
+                  }
+
+                  return originalFetch.call(window, input, {
+                    ...init,
+                    mode: "cors",
+                  });
+                }
+
+                return originalFetch.call(window, input, init);
+              };
+            }
           }).toString() +
           ")()"}
       </script>

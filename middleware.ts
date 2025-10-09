@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-// This is necessary for enabling fetching RSC payloads on navigation
 export function middleware(request: NextRequest) {
   if (request.method === "OPTIONS") {
     const response = new NextResponse(null, { status: 204 });
@@ -22,7 +21,6 @@ export function middleware(request: NextRequest) {
   });
 }
 
-// See "Matching Paths" below to learn more
 export const config = {
   matcher: "/:path*",
 };
