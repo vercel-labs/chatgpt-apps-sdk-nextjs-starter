@@ -143,8 +143,6 @@ next.config.ts            # Asset prefix configuration
 
 This project is designed to work seamlessly with [Vercel](https://vercel.com) deployment. The `baseUrl.ts` configuration automatically detects Vercel environment variables and sets the correct asset URLs.
 
-### Deploy to Vercel
-
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/vercel-labs/chatgpt-apps-sdk-nextjs-starter)
 
 The configuration automatically handles:
