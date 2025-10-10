@@ -98,16 +98,6 @@ function NextChatSDKBootstrap({ baseUrl }: { baseUrl: string }) {
                       e.preventDefault();
                     }
                   } catch {
-                    try {
-                      if (window.openai) {
-                        window.openai.openExternal({ href: a.href });
-                        e.preventDefault();
-                      }
-                    } catch {
-                      console.warn(
-                        "oai.openExternal failed, likely not in OpenAI client"
-                      );
-                    }
                     console.warn(
                       "openExternal failed, likely not in OpenAI client"
                     );
