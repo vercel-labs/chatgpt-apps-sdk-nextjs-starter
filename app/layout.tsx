@@ -3,15 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { baseURL } from "@/baseUrl";
 
-declare global {
-  interface Window {
-    openai?: {
-      openExternal: (options: { href: string }) => void;
-      toolOutput?: any;
-    };
-    innerBaseUrl: string;
-  }
-}
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -108,10 +99,8 @@ function NextChatSDKBootstrap({ baseUrl }: { baseUrl: string }) {
                     }
                   } catch {
                     try {
-                      // @ts-ignore
-                      if (window.oai) {
-                        // @ts-ignore
-                        window.oai.openExternal({ href: a.href });
+                      if (window.openai) {
+                        window.openai.openExternal({ href: a.href });
                         e.preventDefault();
                       }
                     } catch {

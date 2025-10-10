@@ -2,38 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useWidgetProps } from "./hooks/use-widget-props";
 
 export default function Home() {
-  const [name, setName] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    if (!window.openai) {
-      (window as any).openai = {};
-    }
-
-    let currentValue = (window as any).openai.toolOutput;
-
-    Object.defineProperty((window as any).openai, "toolOutput", {
-      get() {
-        return currentValue;
-      },
-      set(newValue: any) {
-        currentValue = newValue;
-        if (newValue?.name) {
-          setName(newValue.name);
-        }
-      },
-      configurable: true,
-      enumerable: true,
-    });
-
-    if (currentValue?.name) {
-      setName(currentValue.name);
-    }
-  }, []);
+  const toolOutput = useWidgetProps<{ name?: string }>();
 
   return (
     <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
@@ -51,7 +23,7 @@ export default function Home() {
             Welcome to the ChatGPT Apps SDK Next.js Starter
           </li>
           <li className="mb-2 tracking-[-.01em]">
-            Name returned from tool call: {name ?? "..."}
+            Name returned from tool call: {toolOutput?.name ?? "..."}
           </li>
           <li className="mb-2 tracking-[-.01em]">
             MCP server path: <Link href="/mcp" className="underline">/mcp</Link>
