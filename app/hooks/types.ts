@@ -23,8 +23,6 @@ export type OpenAIGlobals<
   setWidgetState: (state: WidgetState) => Promise<void>;
 };
 
-// currently copied from types.ts in chatgpt/web-sandbox.
-// Will eventually use a public package.
 type API = {
   callTool: CallTool;
   sendFollowUpMessage: (args: { prompt: string }) => Promise<void>;

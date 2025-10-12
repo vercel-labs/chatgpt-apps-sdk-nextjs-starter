@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useWidgetProps } from "./hooks/use-widget-props";
+import { useWidgetProps } from "./hooks";
 
 export default function Home() {
   const toolOutput = useWidgetProps<{ name?: string; result?: { structuredContent?: { name?: string } } }>();

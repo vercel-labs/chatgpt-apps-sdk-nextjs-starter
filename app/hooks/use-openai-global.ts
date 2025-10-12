@@ -5,7 +5,7 @@ import {
   type OpenAIGlobals,
 } from "./types";
 
-export function useOpenAiGlobal<K extends keyof OpenAIGlobals>(
+export function useOpenAIGlobal<K extends keyof OpenAIGlobals>(
   key: K
 ): OpenAIGlobals[K] | null {
   return useSyncExternalStore(
