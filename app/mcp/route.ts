@@ -39,7 +39,7 @@ const handler = createMcpHandler(async (server) => {
     invoked: "Content loaded",
     html: html,
     description: "Displays the homepage content",
-    widgetDomain: "https://nextjs.org",
+    widgetDomain: "https://nextjs.org/docs",
   };
   server.registerResource(
     "content-widget",
