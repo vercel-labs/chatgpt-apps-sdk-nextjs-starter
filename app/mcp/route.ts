@@ -15,6 +15,7 @@ type ContentWidget = {
   invoked: string;
   html: string;
   description: string;
+  widgetDomain: string;
 };
 
 function widgetMeta(widget: ContentWidget) {
@@ -38,6 +39,7 @@ const handler = createMcpHandler(async (server) => {
     invoked: "Content loaded",
     html: html,
     description: "Displays the homepage content",
+    widgetDomain: "https://nextjs.org",
   };
   server.registerResource(
     "content-widget",
@@ -60,6 +62,7 @@ const handler = createMcpHandler(async (server) => {
           _meta: {
             "openai/widgetDescription": contentWidget.description,
             "openai/widgetPrefersBorder": true,
+            "openai/widgetDomain": contentWidget.widgetDomain,
           },
         },
       ],
