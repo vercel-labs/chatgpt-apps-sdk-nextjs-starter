@@ -2,18 +2,43 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useWidgetProps, useMaxHeight, useDisplayMode, useRequestDisplayMode } from "./hooks";
+import {
+  useWidgetProps,
+  useMaxHeight,
+  useDisplayMode,
+  useRequestDisplayMode,
+  useIsChatGptApp,
+} from "./hooks";
 
 export default function Home() {
-  const toolOutput = useWidgetProps<{ name?: string; result?: { structuredContent?: { name?: string } } }>();
+  const toolOutput = useWidgetProps<{
+    name?: string;
+    result?: { structuredContent?: { name?: string } };
+  }>();
   const maxHeight = useMaxHeight() ?? undefined;
   const displayMode = useDisplayMode();
   const requestDisplayMode = useRequestDisplayMode();
+  const isChatGptApp = useIsChatGptApp();
 
   const name = toolOutput?.result?.structuredContent?.name || toolOutput?.name;
 
+  if (!isChatGptApp) {
+    return (
+      <div className="font-sans flex items-center justify-center min-h-screen p-8">
+        <div className="text-center">
+          <h1 className="text-2xl font-semibold mb-2">
+            This is meant to be accessed on ChatGPT
+          </h1>
+          <p className="text-slate-600 dark:text-slate-400">
+            Please open this application within the ChatGPT environment.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div 
+    <div
       className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center p-8 pb-20 gap-16 sm:p-20"
       style={{
         maxHeight,
@@ -59,19 +84,29 @@ export default function Home() {
             Name returned from tool call: {name ?? "..."}
           </li>
           <li className="mb-2 tracking-[-.01em]">
-            MCP server path: <Link href="/mcp" className="underline">/mcp</Link>
+            MCP server path:{" "}
+            <Link href="/mcp" className="underline">
+              /mcp
+            </Link>
           </li>
         </ol>
 
         <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <Link  
-          className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-          prefetch={false} href="/custom-page" >
+          <Link
+            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
+            prefetch={false}
+            href="/custom-page"
+          >
             Visit another page
           </Link>
-          <a href="https://vercel.com/templates/ai/chatgpt-app-with-next-js" target="_blank" rel="noopener noreferrer" className="underline">
-              Deploy on Vercel
-            </a>
+          <a
+            href="https://vercel.com/templates/ai/chatgpt-app-with-next-js"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            Deploy on Vercel
+          </a>
         </div>
       </main>
     </div>
