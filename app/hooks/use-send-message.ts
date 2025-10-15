@@ -1,8 +1,18 @@
 import { useCallback } from "react";
 
 /**
- * Hook to send follow-up messages to ChatGPT
- * @returns A function to send messages to the ChatGPT conversation
+ * Hook to send follow-up messages to the ChatGPT conversation.
+ * 
+ * @returns A function that sends a message prompt to ChatGPT
+ * 
+ * @example
+ * ```tsx
+ * const sendMessage = useSendMessage();
+ * 
+ * const handleAction = async () => {
+ *   await sendMessage("Tell me more about this topic");
+ * };
+ * ```
  */
 export function useSendMessage() {
   const sendMessage = useCallback((prompt: string) => {
