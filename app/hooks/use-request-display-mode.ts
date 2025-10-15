@@ -2,8 +2,20 @@ import { useCallback } from "react";
 import type { DisplayMode } from "./types";
 
 /**
- * Hook to request display mode changes
- * @returns A function to request a specific display mode (pip, inline, fullscreen)
+ * Hook to request display mode changes from the ChatGPT host.
+ * 
+ * @returns A function to request a specific display mode. The host may reject the request.
+ *          For mobile, PiP is always coerced to fullscreen.
+ * 
+ * @example
+ * ```tsx
+ * const requestDisplayMode = useRequestDisplayMode();
+ * 
+ * const handleExpand = async () => {
+ *   const { mode } = await requestDisplayMode("fullscreen");
+ *   console.log("Granted mode:", mode);
+ * };
+ * ```
  */
 export function useRequestDisplayMode() {
   const requestDisplayMode = useCallback(async (mode: DisplayMode) => {

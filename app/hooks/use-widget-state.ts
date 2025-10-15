@@ -10,6 +10,27 @@ export function useWidgetState<T extends UnknownObject>(
   defaultState?: T | (() => T | null) | null
 ): readonly [T | null, (state: SetStateAction<T | null>) => void];
 
+/**
+ * Hook to manage widget state that persists across widget lifecycles.
+ * State is synchronized with the ChatGPT parent window and survives widget minimize/restore.
+ * 
+ * @param defaultState - Initial state value or function to compute it
+ * @returns A tuple of [state, setState] similar to useState, with bidirectional sync to ChatGPT
+ * 
+ * @example
+ * ```tsx
+ * interface MyState {
+ *   count: number;
+ *   user: string;
+ * }
+ * 
+ * const [state, setState] = useWidgetState<MyState>({ count: 0, user: "guest" });
+ * 
+ * const increment = () => {
+ *   setState(prev => ({ ...prev, count: prev.count + 1 }));
+ * };
+ * ```
+ */
 export function useWidgetState<T extends UnknownObject>(
   defaultState?: T | (() => T | null) | null
 ): readonly [T | null, (state: SetStateAction<T | null>) => void] {
