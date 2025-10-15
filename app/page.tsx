@@ -73,7 +73,16 @@ export default function Home() {
                   This app relies on data from a ChatGPT session.
                 </p>
                 <p className="text-sm text-blue-900 dark:text-blue-100 font-medium">
-                  No window.openai property detected
+                  No{" "}
+                  <a
+                    href="https://developers.openai.com/apps-sdk/reference"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:no-underline font-mono bg-blue-100 dark:bg-blue-900 px-1 py-0.5 rounded"
+                  >
+                    window.openai
+                  </a>{" "}
+                  property detected
                 </p>
               </div>
             </div>
