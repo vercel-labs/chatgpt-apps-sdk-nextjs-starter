@@ -42,6 +42,7 @@ function NextChatSDKBootstrap({ baseUrl }: { baseUrl: string }) {
     <>
       <base href={baseUrl}></base>
       <script>{`window.innerBaseUrl = ${JSON.stringify(baseUrl)}`}</script>
+      <script>{`window.__isChatGptApp = typeof window.openai !== "undefined";`}</script>
       <script>
         {"(" +
           (() => {
