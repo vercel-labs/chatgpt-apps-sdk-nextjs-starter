@@ -1,3 +1,7 @@
+/**
+ * Source: https://github.com/openai/openai-apps-sdk-examples/tree/main/src
+ */
+
 import { useSyncExternalStore } from "react";
 import {
   SET_GLOBALS_EVENT_TYPE,
