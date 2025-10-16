@@ -103,12 +103,7 @@ export default function Home() {
           <li className="mb-2 tracking-[-.01em]">
             Name returned from tool call: {name ?? "..."}
           </li>
-          <li className="mb-2 tracking-[-.01em]">
-            MCP server path:{" "}
-            <Link href="/mcp" className="underline">
-              /mcp
-            </Link>
-          </li>
+          <li className="mb-2 tracking-[-.01em]">MCP server path: /mcp</li>
         </ol>
 
         <div className="flex gap-4 items-center flex-col sm:flex-row">
