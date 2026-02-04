@@ -53,8 +53,13 @@ export type SafeArea = {
 
 export type DeviceType = "mobile" | "tablet" | "desktop" | "unknown";
 
+export type Platform = "native" | "web" | "unknown";
+
 export type UserAgent = {
-  device: { type: DeviceType };
+  device: {
+    type: DeviceType;
+    platform: Platform;
+  };
   capabilities: {
     hover: boolean;
     touch: boolean;
